@@ -2,17 +2,16 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = require('./src/app');
-const { initDB } = require('./src/config/db');
+const { getDB } = require('./src/config/db');
 
 const PORT = process.env.PORT || 3000;
 
-initDB()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch(err => {
-    console.error('Failed to init DB:', err);
+(async () => {
+  try {
+    await getDB(); 
+    app.listen(PORT, () => console.log(`API listening on ${PORT}`));
+  } catch (err) {
+    console.error('Failed to start server:', err);
     process.exit(1);
-  });
+  }
+})();
